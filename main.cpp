@@ -201,6 +201,22 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     scroll_action(scroll);
 
 }
+void multiple_objects(mat4x4 m,mat4x4 mvp, GLint mvp_location)
+{
+    int number_in_line = 10;
+    for (int i = 0; i < number_in_line; i++)
+    {
+        for (int j = 0; j < number_in_line; j++)
+        {
+            mat4x4_translate(m, 1.0, 0.0, 0.0);
+            mat4x4_mul(mvp, mvp, m);
+            glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*)mvp);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        mat4x4_translate(m, -number_in_line, 0.0, 1.0);
+        mat4x4_mul(mvp, mvp, m);
+    }       
+}
 int main(void)
 {
     GLFWwindow* window;
@@ -270,6 +286,7 @@ int main(void)
         float ratio;
         int width, height;
         mat4x4 m, v, p, mvp;
+        mat4x4 m1;
 
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float)height;
@@ -292,11 +309,12 @@ int main(void)
 
         set_view_martix(v, &cam);
         mat4x4_mul(mvp, p, v);
-        mat4x4_mul(mvp, mvp, m);
+        //mat4x4_mul(mvp, mvp, m);
 
         glUseProgram(program);
-        glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*)mvp);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        /*glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*)mvp);
+        glDrawArrays(GL_TRIANGLES, 0, 36);*/
+        multiple_objects(m,mvp,mvp_location);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
