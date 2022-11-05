@@ -204,6 +204,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void multiple_objects(mat4x4 m,mat4x4 mvp, GLint mvp_location)
 {
     int number_in_line = 10;
+    mat4x4_translate(m, -number_in_line/2, 0.0, -number_in_line/2);
+    mat4x4_mul(mvp, mvp, m);
     for (int i = 0; i < number_in_line; i++)
     {
         for (int j = 0; j < number_in_line; j++)
@@ -286,7 +288,6 @@ int main(void)
         float ratio;
         int width, height;
         mat4x4 m, v, p, mvp;
-        mat4x4 m1;
 
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float)height;
@@ -314,8 +315,7 @@ int main(void)
         glUseProgram(program);
         /*glUniformMatrix4fv(mvp_location, 1, GL_FALSE, (const GLfloat*)mvp);
         glDrawArrays(GL_TRIANGLES, 0, 36);*/
-        multiple_objects(m,mvp,mvp_location);
-
+        multiple_objects(m, mvp, mvp_location);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
